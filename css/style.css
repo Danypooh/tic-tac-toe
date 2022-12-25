@@ -6,4 +6,52 @@ html {
 *::after,
 *::before {
   box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+/* Settings Interface */
+
+/* Game Interface */
+#gameHeader {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 20vh;
+}
+
+#gameMain {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+#gameBoard {
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  height: 50vh;
+  width: 40vw;
+}
+
+#gameBoard div {
+  border: 1px solid black;
+}
+
+#gameBottom {
+  display: flex;
+  flex-direction: column;
+  height: 20vh;
+}
+
+.restart,
+.settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.settings {
+  justify-content: end;
 }

@@ -1,9 +1,5 @@
-const name = "James";
+const gameBoard = (() => {})();
 
-const person = { first: name };
+const displayController = (() => {})();
 
-console.log(person);
-
-const sayHelloLinting = (fName) => {
-  console.log(`Hello linting, ${fName}`);
-};
+const Player = () => {};
