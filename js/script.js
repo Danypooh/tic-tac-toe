@@ -1,6 +1,44 @@
-//Module to control the decisions for the flow of the game
+//Module to select what will be used for the gameBoard
 const gameFlow = (() => {
-  let _turn = 0;
+  //---Private---
+  let _turn = 0; //turn sequence reference
+  let _gameBoard = document.getElementById("gameBoard"); //gameBoard reference
+  //Alligned squares needed to win Tic-Tac-Toe
+  let _firstRow = _gameBoard.querySelectorAll("#gameBoard :nth-child(-n+3)");
+  let _secondRow = _gameBoard.querySelectorAll(
+    "#gameBoard :nth-child(n+4):nth-child(-n+6)"
+  );
+  let _thirdRow = _gameBoard.querySelectorAll("#gameBoard :nth-child(n+7)");
+  let _firstColumn = _gameBoard.querySelectorAll("#gameBoard :nth-child(3n+1)");
+  let _secondColumn = _gameBoard.querySelectorAll(
+    "#gameBoard :nth-child(3n+2)"
+  );
+  let _thirdColumn = _gameBoard.querySelectorAll("#gameBoard :nth-child(3n+3)");
+  let _firstDiagonal = _gameBoard.querySelectorAll(
+    "#gameBoard :nth-child(4n+1)"
+  );
+  let _secondDiagonal = _gameBoard.querySelectorAll(
+    "#gameBoard :nth-child(2n+3)"
+  );
+  _secondDiagonal = Array.from(_secondDiagonal);
+  _secondDiagonal.pop();
+  //Array to contain the squares needed to win Tic-Tac-Toe
+  let _threeSquaresToWin = [];
+  let _winner = 0; //flag for win condition
+
+  fillArrayOfSquaresToWin();
+
+  function fillArrayOfSquaresToWin() {
+    //self explanatory
+    _threeSquaresToWin.push(_firstRow);
+    _threeSquaresToWin.push(_secondRow);
+    _threeSquaresToWin.push(_thirdRow);
+    _threeSquaresToWin.push(_firstColumn);
+    _threeSquaresToWin.push(_secondColumn);
+    _threeSquaresToWin.push(_thirdColumn);
+    _threeSquaresToWin.push(_firstDiagonal);
+    _threeSquaresToWin.push(_secondDiagonal);
+  }
 
   function playerMark() {
     //checks which mark turn it is
@@ -8,35 +46,80 @@ const gameFlow = (() => {
     return _turn % 2 === 0 ? "O" : "X";
   }
 
+  function gameOver() {
+    //checks for a gameOver condition
+    for (let condition of _threeSquaresToWin) {
+      if (_winner === 3) {
+        return "X";
+      } else if (_winner === -3) {
+        return "O";
+      } else {
+        _winner = 0;
+      }
+      for (let gameSquares of condition) {
+        if (gameSquares.textContent === "X") {
+          _winner += 1;
+        } else if (gameSquares.textContent === "O") {
+          _winner -= 1;
+        } else {
+          continue;
+        }
+      }
+    }
+    if (_turn === 9) {
+      return "tie";
+    }
+  }
+
   return {
     playerMark,
+    gameOver,
   };
 })();
 
 //Module to control what appears on the Game Board
 const gameBoard = (() => {
   let _gameBoard = document.getElementById("gameBoard");
+  let _gameOver;
 
   bindBoardSquaresToEvent();
 
   function bindBoardSquaresToEvent() {
-    //binds #gameBoard and all within it to a click event
-    _gameBoard.addEventListener("click", addMark);
+    //binds #gameBoard and all within it to a "click event"
+    _gameBoard.addEventListener("click", _addMark);
   }
 
-  function addMark(event) {
-    //gets the event Object of the click event,
-    //then checks if the targetet square has been marked, if not, it calls render to mark it
+  function _addMark(event) {
+    //gets the event Object of the "click event",
+    //then checks if the targeted square has been marked, if not, it calls render to mark it
     event.target.textContent === "X" || event.target.textContent === "O"
       ? alert("Choose another square")
-      : render(event.target.id);
+      : _render(event.target.id);
   }
 
-  function render(target) {
+  function _render(target) {
+    //renders the targeted square with the player mark and checks for game over condition
     _gameBoard.children[target].textContent = gameFlow.playerMark();
+    _printIfGameOver();
   }
 
-  return {
-    addMark,
-  };
+  function _printIfGameOver() {
+    //if the game over condition is met, prints the result
+    _gameOver = gameFlow.gameOver();
+    if (_gameOver === "X") {
+      alert("X wins");
+    } else if (_gameOver === "O") {
+      alert("O wins");
+    } else if (_gameOver === "tie") {
+      alert("It's a Tie!");
+    }
+  }
+
+  return {};
 })();
+
+const Player = (name) => {
+  function getName() {
+    return name;
+  }
+};
