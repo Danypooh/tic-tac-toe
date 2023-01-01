@@ -1,20 +1,48 @@
+//Module to change between Settings and Game Interfaces
+const interfaces = (() => {
+  const _settingsInterface = document.getElementById("settingsInterface");
+  const _startButton = document.querySelector(".startButton");
+  const _gameInterface = document.getElementById("gameInterface");
+  const _settingsButton = document.querySelector(".settingsButton");
+
+  _bindEvents();
+
+  function _bindEvents() {
+    _startButton.addEventListener("click", _displayGameInterface);
+    _settingsButton.addEventListener("click", _displaySettingsInterface);
+  }
+
+  function _displayGameInterface() {
+    _settingsInterface.style.display = "none";
+    _gameInterface.style.display = "block";
+  }
+
+  function _displaySettingsInterface() {
+    _gameInterface.style.display = "none";
+    _settingsInterface.style.display = "block";
+  }
+})();
+
 //Module to select what will be used for the gameBoard
 const gameFlow = (() => {
-  //---Private---
   let _turn = 0; //turn sequence reference
-  let _gameBoard = document.getElementById("gameBoard"); //gameBoard reference
+  const _gameBoard = document.getElementById("gameBoard"); //gameBoard reference
   //Alligned squares needed to win Tic-Tac-Toe
-  let _firstRow = _gameBoard.querySelectorAll("#gameBoard :nth-child(-n+3)");
-  let _secondRow = _gameBoard.querySelectorAll(
+  const _firstRow = _gameBoard.querySelectorAll("#gameBoard :nth-child(-n+3)");
+  const _secondRow = _gameBoard.querySelectorAll(
     "#gameBoard :nth-child(n+4):nth-child(-n+6)"
   );
-  let _thirdRow = _gameBoard.querySelectorAll("#gameBoard :nth-child(n+7)");
-  let _firstColumn = _gameBoard.querySelectorAll("#gameBoard :nth-child(3n+1)");
-  let _secondColumn = _gameBoard.querySelectorAll(
+  const _thirdRow = _gameBoard.querySelectorAll("#gameBoard :nth-child(n+7)");
+  const _firstColumn = _gameBoard.querySelectorAll(
+    "#gameBoard :nth-child(3n+1)"
+  );
+  const _secondColumn = _gameBoard.querySelectorAll(
     "#gameBoard :nth-child(3n+2)"
   );
-  let _thirdColumn = _gameBoard.querySelectorAll("#gameBoard :nth-child(3n+3)");
-  let _firstDiagonal = _gameBoard.querySelectorAll(
+  const _thirdColumn = _gameBoard.querySelectorAll(
+    "#gameBoard :nth-child(3n+3)"
+  );
+  const _firstDiagonal = _gameBoard.querySelectorAll(
     "#gameBoard :nth-child(4n+1)"
   );
   let _secondDiagonal = _gameBoard.querySelectorAll(
@@ -88,16 +116,19 @@ const gameFlow = (() => {
 
 //Module to control what appears on the Game Board
 const gameBoard = (() => {
-  let _gameBoard = document.getElementById("gameBoard");
-  let _restart = document.querySelector(".restartButton");
+  const _gameBoard = document.getElementById("gameBoard");
+  const _restart = document.querySelector(".restartButton");
   let _gameOver;
+  const _gameOverMessage = document.getElementById("gameOverMessage");
+  const _overlay = document.getElementById("overlay");
 
-  bindEvents();
+  _bindEvents();
 
-  function bindEvents() {
-    //binds #gameBoard and all within it to a "click event"
-    _gameBoard.addEventListener("click", _addMark);
+  function _bindEvents() {
+    //Binds all events
+    _gameBoard.addEventListener("click", _addMark); //binds #gameBoard and all within it to a "click event"
     _restart.addEventListener("click", _resetBoard);
+    _overlay.addEventListener("click", _hideMessage);
   }
 
   function _addMark(event) {
@@ -118,13 +149,13 @@ const gameBoard = (() => {
     //if the game over condition is met, prints the result
     _gameOver = gameFlow.gameOver();
     if (_gameOver === "X") {
-      alert("X wins");
+      _displayMessage("X wins!");
       _resetBoard();
     } else if (_gameOver === "O") {
-      alert("O wins");
+      _displayMessage("O wins!");
       _resetBoard();
     } else if (_gameOver === "tie") {
-      alert("It's a Tie!");
+      _displayMessage("It's a tie!");
       _resetBoard();
     }
   }
@@ -133,11 +164,24 @@ const gameBoard = (() => {
     gameFlow.cleanBoard();
   }
 
-  return { _resetBoard };
+  function _displayMessage(message) {
+    _gameOverMessage.children[0].textContent = message;
+    _gameOverMessage.style.display = "flex";
+    _overlay.style.display = "block";
+  }
+
+  function _hideMessage() {
+    _gameOverMessage.style.display = "none";
+    _overlay.style.display = "none";
+  }
+
+  return {};
 })();
 
 const Player = (name) => {
   function getName() {
     return name;
   }
+
+  return {};
 };
