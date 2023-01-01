@@ -49,18 +49,18 @@ const gameFlow = (() => {
   function gameOver() {
     //checks for a gameOver condition
     for (let condition of _threeSquaresToWin) {
-      if (_winner === 3) {
-        return "X";
-      } else if (_winner === -3) {
-        return "O";
-      } else {
-        _winner = 0;
-      }
+      _winner = 0;
       for (let gameSquares of condition) {
         if (gameSquares.textContent === "X") {
           _winner += 1;
+          if (_winner === 3) {
+            return "X";
+          }
         } else if (gameSquares.textContent === "O") {
           _winner -= 1;
+          if (_winner === -3) {
+            return "O";
+          }
         } else {
           continue;
         }
@@ -71,22 +71,33 @@ const gameFlow = (() => {
     }
   }
 
+  function cleanBoard() {
+    _winner = 0;
+    _turn = 0;
+    for (let i = 0; i < _gameBoard.childElementCount; i++) {
+      _gameBoard.children[i].textContent = "";
+    }
+  }
+
   return {
     playerMark,
     gameOver,
+    cleanBoard,
   };
 })();
 
 //Module to control what appears on the Game Board
 const gameBoard = (() => {
   let _gameBoard = document.getElementById("gameBoard");
+  let _restart = document.querySelector(".restartButton");
   let _gameOver;
 
-  bindBoardSquaresToEvent();
+  bindEvents();
 
-  function bindBoardSquaresToEvent() {
+  function bindEvents() {
     //binds #gameBoard and all within it to a "click event"
     _gameBoard.addEventListener("click", _addMark);
+    _restart.addEventListener("click", _resetBoard);
   }
 
   function _addMark(event) {
@@ -108,14 +119,21 @@ const gameBoard = (() => {
     _gameOver = gameFlow.gameOver();
     if (_gameOver === "X") {
       alert("X wins");
+      _resetBoard();
     } else if (_gameOver === "O") {
       alert("O wins");
+      _resetBoard();
     } else if (_gameOver === "tie") {
       alert("It's a Tie!");
+      _resetBoard();
     }
   }
 
-  return {};
+  function _resetBoard() {
+    gameFlow.cleanBoard();
+  }
+
+  return { _resetBoard };
 })();
 
 const Player = (name) => {
